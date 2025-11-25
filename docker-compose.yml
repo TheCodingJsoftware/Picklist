@@ -8,24 +8,30 @@ services:
       - db
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://picklist:picklistpassword@db:5432/picklistdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Pine2admin
+      POSTGRES_HOST: db        # docker-internal hostname
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: picklist
+      TZ: America/Winnipeg
     ports:
-      - "5061:5061"
+      - "5000:5000"
     volumes:
-      - /mnt/rootshare/PickList:/app/data
+      - /mnt/rootshare/PickList:/app/data  # persistent app data folder
 
   db:
-    image: postgres:16
+    image: postgres:18
     container_name: picklist_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: picklistdb
-      POSTGRES_USER: picklist
-      POSTGRES_PASSWORD: picklistpassword
+      POSTGRES_DB: picklist
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Pine2admin
+      TZ: America/Winnipeg
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5432:5432"  # exposed for local dev tools (DBeaver, TablePlus, etc.)
 
 volumes:
   pgdata:

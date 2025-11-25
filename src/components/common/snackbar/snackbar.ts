@@ -87,7 +87,6 @@ export class SnackbarComponent {
     public static info(message: string, opts: Partial<SnackbarOptions> = {}): SnackbarComponent {
         return new SnackbarComponent({
             message,
-            type: "primary",
             icon: "info",
             onClose: () => { },
             ...opts

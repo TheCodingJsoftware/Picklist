@@ -5,6 +5,8 @@ description = "PickList is a family-based ordering system that gives each househ
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "asyncpg>=0.31.0",
+    "bcrypt>=5.0.0",
     "jinja2>=3.1.6",
     "python-dotenv>=1.2.1",
     "tornado>=6.5.2",

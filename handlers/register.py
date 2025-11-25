@@ -2,7 +2,10 @@ import logging
 import os
 import uuid
 
+import bcrypt
+
 from handlers.base import BaseHandler
+from utils.database import create_colony_database, get_master_pool
 
 
 class RegisterHandler(BaseHandler):
@@ -33,7 +36,36 @@ class RegisterHandler(BaseHandler):
 
                 banner_filename = new_name
 
-            # TODO: Save all data to DB here
+            # hash password
+            salt = bcrypt.gensalt()
+            pw_hash = bcrypt.hashpw(password.encode(), salt).decode()
+
+            # colony ID + DB name
+            colony_id = uuid.uuid4()
+            colony_db = f"colony_{colony_id.hex}"
+
+            # create colony database
+            await create_colony_database(colony_db)
+
+            # save to master table
+            pool = await get_master_pool()
+            async with pool.acquire() as conn:
+                await conn.execute(
+                    """
+                    INSERT INTO colonies (
+                        id, username, password_hash, colony_name,
+                        theme_color, banner_file, database_name
+                    )
+                    VALUES ($1,$2,$3,$4,$5,$6,$7)
+                """,
+                    colony_id,
+                    username,
+                    pw_hash,
+                    colony,
+                    theme_color,
+                    banner_filename,
+                    colony_db,
+                )
 
             self.finish({"success": True, "username": username, "colony": colony, "theme_color": theme_color, "banner_file": banner_filename})
 
