@@ -45,9 +45,6 @@
             "@config/*": [
                 "config/*"
             ],
-            "@state/*": [
-                "state/*"
-            ]
         },
         "declaration": true,
         "declarationMap": true,

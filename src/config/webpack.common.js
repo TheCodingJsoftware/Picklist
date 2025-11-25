@@ -56,7 +56,6 @@ module.exports = {
             "@static": path.resolve(appRoot, "src/static"),
             "@models": path.resolve(appRoot, "src/models"),
             "@config": path.resolve(appRoot, "src/config"),
-            "@state": path.resolve(appRoot, "src/state"),
         },
         fallback: {
             fs: false,

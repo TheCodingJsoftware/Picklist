@@ -1,14 +1,18 @@
 import os
 
 from handlers.page import PageHandler
+from handlers.register import RegisterHandler
 from handlers.static.custom import CustomStaticFileHandler
 from routes.route import route
 
 page_routes = [
     route(r"/", PageHandler, name="index", template_name="index.html"),
+    route(r"/register", PageHandler, name="register", template_name="register.html"),
 ]
 
-api_routes = []
+api_routes = [
+    route(r"/api/register", RegisterHandler, name="register"),
+]
 
 static_routes = [
     (
