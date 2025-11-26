@@ -28,7 +28,7 @@ class RegisterHandler(BaseHandler):
                 fileinfo = banner_meta[0]
                 original_name = fileinfo["filename"]
                 ext = os.path.splitext(original_name)[1]
-                new_name = f"{colony_id}{ext}"
+                new_name = f"{colony_id}_{original_name}{ext}"
 
                 save_path = f"{Environment.DATA_PATH}/uploaded_banners/{new_name}"
                 os.makedirs(f"{Environment.DATA_PATH}/uploaded_banners", exist_ok=True)
@@ -68,7 +68,7 @@ class RegisterHandler(BaseHandler):
                     colony_db,
                 )
 
-            self.finish({"success": True, "username": username, "colony": colony, "theme_color": theme_color, "banner_file": banner_filename})
+            self.finish({"success": True, "username": username, "colony": colony.lower(), "theme_color": theme_color, "banner_file": banner_filename})
 
         except Exception as e:
             self.set_status(400)

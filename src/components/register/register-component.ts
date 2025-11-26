@@ -1,11 +1,14 @@
 import "@components/common/button/register-button";
+import "@components/common/button/save-button";
 import { RegisterButton } from "@components/common/button/register-button";
+import { SaveButton } from "@components/common/button/save-button";
 import { SnackbarComponent } from "@components/common/snackbar/snackbar";
 import { DEFAULT_COLOR } from "@utils/colors";
 
 export class RegisterComponent extends HTMLElement {
     private selectedColor: string | null = null;
     private selectedBannerFile: File | null = null;
+    private isEditMode = false;
 
     constructor() {
         super();
@@ -13,7 +16,7 @@ export class RegisterComponent extends HTMLElement {
         this.innerHTML = `
         <article class="round border no-padding">
             <img class="responsive small top-round pointer"
-                src="/static/images/placeholder-banner.png"
+                src="/uploaded_banners/placeholder-banner.png"
                 id="colony-banner">
 
             <nav class="row no-margin tiny-padding">
@@ -38,19 +41,20 @@ export class RegisterComponent extends HTMLElement {
             </nav>
 
             <div class="padding grid">
-                <div class="s12 round field label border">
+                <div class="s12 round field label border bottom-margin">
                     <input type="text" id="colony">
                     <label>Colony Name</label>
+                    <span class="helper">Mountpoint: /<span id="colony-mountpoint"></span></span>
                 </div>
 
                 <div class="s12 m6 l6 round field label border bottom-margin">
-                    <input type="text" id="username">
+                    <input type="text" id="username" required>
                     <label>Username</label>
                     <span class="helper">Your first & last name</span>
                 </div>
 
                 <div class="s12 m6 l6 round field label border bottom-margin">
-                    <input type="password" id="password">
+                    <input type="password" id="password" required>
                     <label>Password</label>
                     <span class="helper">Choose a strong password</span>
                 </div>
@@ -62,19 +66,59 @@ export class RegisterComponent extends HTMLElement {
                     </div>
                 </fieldset>
 
-                <nav class="s12 right-align">
-                    <button is="register-button" id="registerButton">
-                        <i>login</i>
-                        <span>Register</span>
-                    </button>
-                </nav>
+                <nav class="s12 right-align" id="button-container"></nav>
             </div>
         </article>
         `;
     }
+
     connectedCallback() {
         // DEFAULT COLOR (e.g., #2196f3 blue)
         this.selectedColor = "#2196f3";
+
+        const buttonContainer = this.querySelector("#button-container")!;
+        const colony = this.getAttribute("data-colony");
+
+        if (colony) {
+            // EDIT MODE → use save-button
+            this.isEditMode = true;
+            buttonContainer.innerHTML = `
+                <button is="save-button" id="actionButton">
+                    <i>save</i>
+                    <span>Save Changes</span>
+                </button>
+            `;
+        } else {
+            // REGISTER MODE → use register-button
+            buttonContainer.innerHTML = `
+                <button is="register-button" id="actionButton">
+                    <i>login</i>
+                    <span>Register</span>
+                </button>
+            `;
+        }
+
+        if (this.isEditMode && colony) {
+            // Fill values
+            (this.querySelector("#colony") as HTMLInputElement).value = colony;
+
+            const username = this.getAttribute("data-username");
+            if (username) {
+                (this.querySelector("#username") as HTMLInputElement).value = username;
+            }
+
+            const theme = this.getAttribute("data-theme");
+            if (theme) {
+                this.selectedColor = theme;
+                ui("theme", theme);
+            }
+
+            const banner = this.getAttribute("data-banner");
+            if (banner) {
+                (this.querySelector("#colony-banner") as HTMLImageElement).src =
+                    "/uploaded_banners/" + banner;
+            }
+        }
 
         // highlight default color
         const defaultBtn = this.querySelector(`[data-color="${this.selectedColor}"]`);
@@ -143,10 +187,28 @@ export class RegisterComponent extends HTMLElement {
         });
 
         // register button
-        this.querySelector("#registerButton")
+        this.querySelector("#actionButton")
             ?.addEventListener("click", () => this.register());
+
+        const colonyInput = this.querySelector("#colony") as HTMLInputElement;
+        const mountpointEl = this.querySelector("#colony-mountpoint") as HTMLElement;
+
+        // Initialize mountpoint display
+        mountpointEl.textContent = this.slugify(colonyInput.value);
+
+        // Update mountpoint live as user types
+        colonyInput.addEventListener("input", () => {
+            const slug = this.slugify(colonyInput.value);
+            mountpointEl.textContent = slug;
+        });
     }
 
+    private slugify(name: string): string {
+        return name
+            .toLowerCase()
+            .replace(/\s+/g, "_")     // spaces → underscores
+            .replace(/[^a-z_]/g, ""); // allow only a–z and _
+    }
 
     themeButtons() {
         const colors = [
@@ -165,14 +227,14 @@ export class RegisterComponent extends HTMLElement {
     }
 
     async register() {
-        const registerButton = this.querySelector("#registerButton") as RegisterButton;
+        const actionButton = this.querySelector("#actionButton") as RegisterButton | SaveButton;
         const username = (this.querySelector("#username") as HTMLInputElement).value;
         const password = (this.querySelector("#password") as HTMLInputElement).value;
         const colony = (this.querySelector("#colony") as HTMLInputElement).value;
 
-        if (!username || !password || !colony) {
+        if (!this.isEditMode && (!username || !password || !colony)) {
             SnackbarComponent.error("Please fill in all required fields.");
-            registerButton.failure();
+            actionButton.failure();
             return;
         }
 
@@ -183,17 +245,26 @@ export class RegisterComponent extends HTMLElement {
         const formData = new FormData();
         formData.append("username", username);
         formData.append("password", password);
-        formData.append("colony", colony);
+        const originalColony = this.getAttribute("data-colony")!;
+        const newColony = (this.querySelector("#colony") as HTMLInputElement).value;
+
+        formData.append("colony", this.slugify(newColony));
         formData.append("theme_color", this.selectedColor);
 
         if (this.selectedBannerFile) {
             formData.append("banner", this.selectedBannerFile);
         }
 
-        registerButton.start();
+        actionButton.start();
 
         try {
-            const response = await fetch("/api/register", {
+            let endpoint = "/api/register";
+
+            if (this.isEditMode) {
+                endpoint = `/api/colony/${originalColony}/settings`;
+            }
+
+            const response = await fetch(endpoint, {
                 method: "POST",
                 body: formData // NOT JSON
             });
@@ -203,7 +274,7 @@ export class RegisterComponent extends HTMLElement {
             if (result.error) throw new Error(result.error);
 
             SnackbarComponent.success("Registration successful!");
-            registerButton.success();
+            actionButton.success();
 
             this.dispatchEvent(new CustomEvent("register-response", {
                 detail: result,
@@ -211,10 +282,17 @@ export class RegisterComponent extends HTMLElement {
                 composed: true
             }));
 
+            window.setTimeout(() => {
+                if (this.isEditMode) {
+                    self.location.href = `/${this.slugify(newColony)}/settings`;
+                }
+            }, 1000);
+
+
         } catch (err) {
             console.error("Register error:", err);
             SnackbarComponent.error("Registration failed. Please try again.");
-            registerButton.failure();
+            actionButton.failure();
         }
     }
 }

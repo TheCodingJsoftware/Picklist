@@ -1,19 +1,25 @@
 import os
 
+from handlers.colony_items import ColonyItemsPageHandler
+from handlers.colony_page import ColonyPageHandler
+from handlers.colony_settings import ColonySettingsAPIHandler, ColonySettingsPageHandler
 from handlers.page import PageHandler
 from handlers.register import RegisterHandler
 from handlers.static.custom import CustomStaticFileHandler
 from routes.route import route
 
 page_routes = [
+    # Specific pages first
     route(r"/", PageHandler, name="index", template_name="index.html"),
-    route(r"/[a-z]+", PageHandler, name="colony_dashboard", template_name="colony_dashboard.html"),
-    route(r"/register", PageHandler, name="register", template_name="register.html"),
+    route(r"/register", PageHandler, name="register_page", template_name="register.html"),
+    # Colony sub-pages
+    route(r"/([a-z0-9_\-]+)/items", ColonyItemsPageHandler, name="colony_items"),
+    route(r"/([a-z0-9_\-]+)/settings", ColonySettingsPageHandler, name="colony_settings"),
+    # Colony dashboard LAST
+    route(r"/([a-z0-9_\-]+)", ColonyPageHandler, name="colony_dashboard"),
 ]
 
-api_routes = [
-    route(r"/api/register", RegisterHandler, name="register"),
-]
+api_routes = [route(r"/api/register", RegisterHandler, name="register_api"), route(r"/api/colony/([a-z0-9_\-]+)/settings", ColonySettingsAPIHandler, name="colony_settings_api")]
 
 static_routes = [
     (
@@ -29,6 +35,7 @@ static_routes = [
         CustomStaticFileHandler,
         path="dist",
     ),
+    route(r"/uploaded_banners/(.*)", CustomStaticFileHandler, path=os.path.join(os.getenv("DATA_PATH", "data"), "uploaded_banners")),
 ]
 
-routes = page_routes + api_routes + static_routes
+routes = api_routes + static_routes + page_routes

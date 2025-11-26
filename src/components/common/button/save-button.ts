@@ -1,4 +1,4 @@
-export class RegisterButton extends HTMLButtonElement {
+export class SaveButton extends HTMLButtonElement {
     private defaultHTML = "";
     private isLoading = false;
 
@@ -7,8 +7,8 @@ export class RegisterButton extends HTMLButtonElement {
 
         // default rendering
         this.defaultHTML = `
-            <i>login</i>
-            <span>Register</span>
+            <i>save</i>
+            <span>Save</span>
         `;
         this.innerHTML = this.defaultHTML;
 
@@ -26,7 +26,7 @@ export class RegisterButton extends HTMLButtonElement {
             <i>
                 <div class="shape loading-indicator max fill"></div>
             </i>
-            <span>Registering...</span>
+            <span>Saving...</span>
         `;
     }
 
@@ -68,4 +68,4 @@ export class RegisterButton extends HTMLButtonElement {
 }
 
 // register as an extended <button>
-customElements.define("register-button", RegisterButton, { extends: "button" });
+customElements.define("save-button", SaveButton, { extends: "button" });

@@ -16,13 +16,13 @@
           <h6>{{colony_name.title().replace("_", " ")}}</h6>
         </nav>
       </header>
+      <a href="/{{colony_name}}">
+        <i>home</i>
+        <div>Home</div>
+      </a>
       <a href="/{{colony_name}}/items">
         <i>edit</i>
         <div>Edit Items</div>
-      </a>
-      <a href="/{{colony_name}}/settings">
-        <i>settings</i>
-        <div>Colony Settings</div>
       </a>
       <a>
         <i>share</i>
@@ -39,13 +39,13 @@
       <header>
         <img src="/uploaded_banners/{{banner_file}}" class="circle extra">
       </header>
-      <a>
+      <a href="/{{colony_name}}">
+        <i>home</i>
+        <div>Home</div>
+      </a>
+      <a href="/{{colony_name}}/items">
         <i>edit</i>
         <div>Edit Items</div>
-      </a>
-      <a>
-        <i>settings</i>
-        <div>Colony Settings</div>
       </a>
       <a>
         <i>share</i>
@@ -68,9 +68,12 @@
       </a>
     </nav>
     <main class="responsive">
-      <img src="/uploaded_banners/{{banner_file}}" class="responsive round medium-height">
-      <h3>Welcome!</h3>
-      <h5>Your pantry, your choice!</h5>
+        <register-component
+            data-colony="{{colony_name.title().replace('_', ' ')}}"
+            data-username="{{username}}"
+            data-theme="{{theme_color}}"
+            data-banner="{{banner_file}}">
+        </register-component>
     </main>
   </body>
 </html>

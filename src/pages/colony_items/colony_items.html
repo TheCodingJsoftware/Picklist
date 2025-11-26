@@ -8,7 +8,6 @@
     <link rel="icon" type="image/png" href="/uploaded_banners/{{banner_file}}">
   </head>
   <body class="dark" data-theme="{{theme_color}}">
-
     <nav class="left max l">
       <header>
         <nav>
@@ -16,9 +15,9 @@
           <h6>{{colony_name.title().replace("_", " ")}}</h6>
         </nav>
       </header>
-      <a href="/{{colony_name}}/items">
-        <i>edit</i>
-        <div>Edit Items</div>
+      <a href="/{{colony_name}}">
+        <i>home</i>
+        <div>Home</div>
       </a>
       <a href="/{{colony_name}}/settings">
         <i>settings</i>
@@ -39,11 +38,11 @@
       <header>
         <img src="/uploaded_banners/{{banner_file}}" class="circle extra">
       </header>
-      <a>
-        <i>edit</i>
-        <div>Edit Items</div>
+      <a href="/{{colony_name}}">
+        <i>home</i>
+        <div>Home</div>
       </a>
-      <a>
+      <a href="/{{colony_name}}/settings">
         <i>settings</i>
         <div>Colony Settings</div>
       </a>

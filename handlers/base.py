@@ -1,3 +1,4 @@
+import json
 import logging
 import traceback
 import urllib.parse
@@ -29,6 +30,11 @@ class BaseHandler(RequestHandler):
 
         self.set_header("Content-Type", "application/json")
         self.finish({"error": f"Server error (status: {status_code})"})
+
+    def write_json(self, data, status=200):
+        self.set_status(status)
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(data))
 
     def get_template(self, template_name: str):
         return env.get_template(template_name)
