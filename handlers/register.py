@@ -4,6 +4,7 @@ import uuid
 
 import bcrypt
 
+from config.environments import Environment
 from handlers.base import BaseHandler
 from utils.database import create_colony_database, get_master_pool
 
@@ -18,6 +19,7 @@ class RegisterHandler(BaseHandler):
 
             banner_meta = self.request.files.get("banner")
 
+            colony_id = uuid.uuid4()
             banner_filename = None
 
             logging.info(f"Received registration data: username={username}, colony={colony}, theme_color={theme_color}, banner_meta={banner_meta}")
@@ -26,10 +28,10 @@ class RegisterHandler(BaseHandler):
                 fileinfo = banner_meta[0]
                 original_name = fileinfo["filename"]
                 ext = os.path.splitext(original_name)[1]
-                new_name = f"{uuid.uuid4()}{ext}"
+                new_name = f"{colony_id}{ext}"
 
-                save_path = f"uploaded_banners/{new_name}"
-                os.makedirs("uploaded_banners", exist_ok=True)
+                save_path = f"{Environment.DATA_PATH}/uploaded_banners/{new_name}"
+                os.makedirs(f"{Environment.DATA_PATH}/uploaded_banners", exist_ok=True)
 
                 with open(save_path, "wb") as f:
                     f.write(fileinfo["body"])
@@ -41,7 +43,6 @@ class RegisterHandler(BaseHandler):
             pw_hash = bcrypt.hashpw(password.encode(), salt).decode()
 
             # colony ID + DB name
-            colony_id = uuid.uuid4()
             colony_db = f"colony_{colony_id.hex}"
 
             # create colony database

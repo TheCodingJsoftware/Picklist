@@ -7,6 +7,7 @@ from routes.route import route
 
 page_routes = [
     route(r"/", PageHandler, name="index", template_name="index.html"),
+    route(r"/[a-z]+", PageHandler, name="colony_dashboard", template_name="colony_dashboard.html"),
     route(r"/register", PageHandler, name="register", template_name="register.html"),
 ]
 

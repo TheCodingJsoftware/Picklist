@@ -45,6 +45,7 @@ async def create_colony_database(db_name: str):
     conn = await asyncpg.connect(dsn=ROOT_DSN)
     try:
         await conn.execute(f'CREATE DATABASE "{db_name}"')
+        await initialize_colony_schema(db_name)
         logging.info(f"Database created successfully -> {db_name}")
     finally:
         await conn.close()
