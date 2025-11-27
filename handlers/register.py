@@ -20,7 +20,7 @@ class RegisterHandler(BaseHandler):
             banner_meta = self.request.files.get("banner")
 
             colony_id = uuid.uuid4()
-            banner_filename = None
+            banner_filename = "placeholder-banner.png"
 
             logging.info(f"Received registration data: username={username}, colony={colony}, theme_color={theme_color}, banner_meta={banner_meta}")
 

@@ -7,7 +7,7 @@
     <title>{{colony_name.title().replace("_", " ")}}</title>
     <link rel="icon" type="image/png" href="/uploaded_banners/{{banner_file}}">
   </head>
-  <body class="dark" data-theme="{{theme_color}}">
+  <body class="dark" data-theme="{{theme_color}}", data-colony="{{colony_name}}">
 
     <nav class="left max l">
       <header>
@@ -16,56 +16,61 @@
           <h6>{{colony_name.title().replace("_", " ")}}</h6>
         </nav>
       </header>
+      {% if not is_colony_admin %}
+      <a id="login-button">
+        <i>login</i>
+        <span>Login</span>
+      </a>
+      {% else %}
+      <a href="/{{colony_name}}/logout">
+        <i>logout</i>
+        <span>Logout</span>
+      </a>
+      {% endif %}
+      {% if is_colony_admin %}
       <a href="/{{colony_name}}/items">
         <i>edit</i>
-        <div>Edit Items</div>
+        <span>Edit Items</span>
       </a>
       <a href="/{{colony_name}}/settings">
         <i>settings</i>
-        <div>Colony Settings</div>
+        <span>Colony Settings</span>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
+      {% endif %}
+      <a is="share-button"></a>
       <div class="divider"></div>
-      <a>
-        <i>help</i>
-        <div>Help</div>
-      </a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="left m">
       <header>
         <img src="/uploaded_banners/{{banner_file}}" class="circle extra">
       </header>
-      <a>
+      {% if is_colony_admin %}
+      <a href="/{{colony_name}}/items">
         <i>edit</i>
-        <div>Edit Items</div>
+        <span>Edit Items</span>
       </a>
-      <a>
+      <a href="/{{colony_name}}/settings">
         <i>settings</i>
-        <div>Colony Settings</div>
+        <span>Colony Settings</span>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
+      {% endif %}
+      <a is="share-button"></a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="bottom s">
-      <a>
+      {% if is_colony_admin %}
+      <a href="/{{colony_name}}/items">
         <i>edit</i>
       </a>
-      <a>
+      <a href="/{{colony_name}}/settings">
         <i>settings</i>
       </a>
-      <a>
-        <i>share</i>
-      </a>
-      <a>
-        <i>help</i>
-      </a>
+      {% endif %}
+      <a is="share-button"></a>
+      <a is="help-button"></a>
     </nav>
     <main class="responsive">
       <img src="/uploaded_banners/{{banner_file}}" class="responsive round medium-height">

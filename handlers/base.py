@@ -42,8 +42,9 @@ class BaseHandler(RequestHandler):
     def render_template(self, template_name: str, **kwargs):
         template = self.get_template(template_name)
         rendered_template = template.render(**kwargs)
-        self.set_header("Cache-Control", "max-age=3600")
-        self.set_header("Content-Type", "text/html")
+        self.set_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.set_header("Pragma", "no-cache")  # HTTP 1.0 backward compatibility
+        self.set_header("Expires", "0")  # Proxies
         self.write(rendered_template)
 
     def data_received(self, chunk: bytes) -> Awaitable[None] | None:

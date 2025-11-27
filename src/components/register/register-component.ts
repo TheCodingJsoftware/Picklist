@@ -19,7 +19,7 @@ export class RegisterComponent extends HTMLElement {
                 src="/uploaded_banners/placeholder-banner.png"
                 id="colony-banner">
 
-            <nav class="row no-margin tiny-padding">
+            <nav class="row no-margin tiny-padding right-align wrap tiny-space">
                 <label class="helper small-padding">
                     Colony Banner
                 </label>
@@ -261,7 +261,7 @@ export class RegisterComponent extends HTMLElement {
             let endpoint = "/api/register";
 
             if (this.isEditMode) {
-                endpoint = `/api/colony/${originalColony}/settings`;
+                endpoint = `/api/colony/${this.slugify(originalColony)}/settings`;
             }
 
             const response = await fetch(endpoint, {
@@ -285,6 +285,8 @@ export class RegisterComponent extends HTMLElement {
             window.setTimeout(() => {
                 if (this.isEditMode) {
                     self.location.href = `/${this.slugify(newColony)}/settings`;
+                } else {
+                    self.location.href = `/${this.slugify(newColony)}/login`;
                 }
             }, 1000);
 

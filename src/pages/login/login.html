@@ -1,0 +1,25 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ colony_name.title().replace('_', ' ') }} - Login</title>
+    <link rel="icon" type="image/png" href="/uploaded_banners/{{ banner_file }}">
+</head>
+
+<body class="dark" data-theme="{{ theme_color }}" data-colony="{{ colony_name }}">
+    <nav class="top surface left-align">
+        <a href="/{{ colony_name }}">
+          <i>home</i>
+          <span>Home</span>
+        </a>
+        <h5>Login</h5>
+    </nav>
+
+    <main class="responsive">
+        <img src="/uploaded_banners/{{banner_file}}" class="responsive round medium-height">
+        <h3>{{ colony_name.title().replace('_', ' ') }}</h3>
+        <login-component></login-component>
+        <footer-component></footer-component>
+    </main>
+</body>
+</html>

@@ -63,12 +63,11 @@ export function updateMetaColors(color?: string) {
 }
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
-    const newTheme = e.matches ? "dark" : "light";
-    ui("mode", newTheme);
+    const newMode = e.matches ? "dark" : "light";
+    ui("mode", newMode);
     updateMetaColors(); // re-sync
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     loadTheme();
-    invertImages();
 });

@@ -33,6 +33,9 @@ class ColonySettingsPageHandler(BaseHandler):
             self.finish(f"Colony '{colony_identifier}' not found.")
             return
 
+        raw_role = self.get_secure_cookie("role")
+        role = raw_role.decode("utf-8") if raw_role else None
+
         logging.info(f"[SETTINGS_PAGE] Loaded colony='{colony_record['colony_name']}' theme='{colony_record['theme_color']}' banner='{colony_record['banner_file']}'")
 
         self.render_template(
@@ -41,6 +44,7 @@ class ColonySettingsPageHandler(BaseHandler):
             theme_color=colony_record["theme_color"],
             banner_file=colony_record["banner_file"],
             username=colony_record["username"],
+            role=role,
         )
 
 

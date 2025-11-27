@@ -24,15 +24,8 @@
         <i>edit</i>
         <div>Edit Items</div>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
       <div class="divider"></div>
-      <a>
-        <i>help</i>
-        <div>Help</div>
-      </a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="left m">
@@ -47,25 +40,17 @@
         <i>edit</i>
         <div>Edit Items</div>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="bottom s">
-      <a>
-        <i>edit</i>
+      <a href="/{{colony_name}}">
+        <i>home</i>
       </a>
-      <a>
+      <a href="/{{colony_name}}/settings">
         <i>settings</i>
       </a>
-      <a>
-        <i>share</i>
-      </a>
-      <a>
-        <i>help</i>
-      </a>
+      <a is="help-button"></a>
     </nav>
     <main class="responsive">
         <register-component
@@ -74,6 +59,7 @@
             data-theme="{{theme_color}}"
             data-banner="{{banner_file}}">
         </register-component>
+        <footer-component></footer-component>
     </main>
   </body>
 </html>

@@ -23,15 +23,8 @@
         <i>settings</i>
         <div>Colony Settings</div>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
       <div class="divider"></div>
-      <a>
-        <i>help</i>
-        <div>Help</div>
-      </a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="left m">
@@ -46,30 +39,23 @@
         <i>settings</i>
         <div>Colony Settings</div>
       </a>
-      <a>
-        <i>share</i>
-        <div>Share</div>
-      </a>
+      <a is="help-button"></a>
     </nav>
 
     <nav class="bottom s">
-      <a>
-        <i>edit</i>
+      <a href="/{{colony_name}}">
+        <i>home</i>
       </a>
-      <a>
+      <a href="/{{colony_name}}/settings">
         <i>settings</i>
       </a>
-      <a>
-        <i>share</i>
-      </a>
-      <a>
-        <i>help</i>
-      </a>
+      <a is="help-button"></a>
     </nav>
     <main class="responsive">
       <img src="/uploaded_banners/{{banner_file}}" class="responsive round medium-height">
       <h3>Welcome!</h3>
       <h5>Your pantry, your choice!</h5>
+        <footer-component></footer-component>
     </main>
   </body>
 </html>

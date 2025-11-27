@@ -1,10 +1,9 @@
 import "beercss"
 import "material-dynamic-colors"
 import "@utils/theme"
-import "@components/register/register-component"
+import "@static/css/global.css"
+import "@components/login/login-component"
 import "@components/common/footer/footer-component"
-import "@components/common/button/help-button"
-import "@components/common/button/share-button"
 
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.querySelector("body")
@@ -14,4 +13,4 @@ document.addEventListener("DOMContentLoaded", () => {
             ui("theme", colonyTheme);
         }
     }
-})
+});
