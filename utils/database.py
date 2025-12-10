@@ -5,8 +5,6 @@ import asyncpg
 
 from config.environments import Environment
 
-MASTER_DSN = f"postgres://{Environment.POSTGRES_USER}:{Environment.POSTGRES_PASSWORD}@{Environment.POSTGRES_HOST}:{Environment.POSTGRES_PORT}/{Environment.POSTGRES_DB}"
-
 ROOT_DSN = f"postgres://{Environment.POSTGRES_USER}:{Environment.POSTGRES_PASSWORD}@{Environment.POSTGRES_HOST}:{Environment.POSTGRES_PORT}/postgres"
 
 master_pool = None
@@ -55,17 +53,19 @@ async def initialize_master_schema():
 # ===============================
 #  MASTER POOL INITIALIZATION
 # ===============================
-async def init_master_pool():
-    """
-    Creates asyncpg pool AND ensures the master DB is initialized.
-    """
-    global master_pool
+def build_dsn(db_name=None):
+    db = db_name or Environment.POSTGRES_DB
+    return f"postgres://{Environment.POSTGRES_USER}:{Environment.POSTGRES_PASSWORD}@{Environment.POSTGRES_HOST}:{Environment.POSTGRES_PORT}/{db}"
 
+
+async def init_master_pool():
+    global master_pool
     if master_pool is None:
-        logging.info(f"Creating master DB pool -> {MASTER_DSN}")
+        dsn = build_dsn()
+        logging.info(f"Creating master DB pool -> {dsn}")
 
         master_pool = await asyncpg.create_pool(
-            dsn=MASTER_DSN,
+            dsn=dsn,
             min_size=Environment.POSTGRES_MIN_POOL_SIZE,
             max_size=Environment.POSTGRES_MAX_POOL_SIZE,
             timeout=Environment.POSTGRES_TIMEOUT,
@@ -73,7 +73,6 @@ async def init_master_pool():
             max_inactive_connection_lifetime=Environment.POSTGRES_MAX_INACTIVE_CONNECTION_LIFETIME,
         )
 
-        # Ensure master schema exists
         await initialize_master_schema()
 
     return master_pool
@@ -97,6 +96,9 @@ async def create_colony_database(db_name: str):
         await conn.execute(f'CREATE DATABASE "{db_name}"')
         await initialize_colony_schema(db_name)
         logging.info(f"Database created successfully -> {db_name}")
+    except Exception as e:
+        logging.error(f"Error creating database {db_name}: {e}")
+        raise
     finally:
         await conn.close()
 
