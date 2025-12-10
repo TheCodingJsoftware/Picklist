@@ -1,7 +1,5 @@
 import os
-import traceback
 
-import asyncpg
 import tornado.httpserver
 import tornado.web
 from tornado.ioloop import IOLoop
@@ -10,17 +8,6 @@ from config.environments import Environment
 from config.logging_config import setup_logging
 from routes import route_map
 from utils.database import init_master_pool
-
-asyncpg_connect_original = asyncpg.connect
-
-
-async def debug_connect(*args, **kwargs):
-    print("ASYNC_PG DEBUG CONNECT CALLED BEFORE INIT_MASTER_POOL")
-    traceback.print_stack()
-    return await asyncpg_connect_original(*args, **kwargs)
-
-
-asyncpg.connect = debug_connect
 
 setup_logging()
 
